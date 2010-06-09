@@ -12,14 +12,14 @@ import org.junit.After
 @Grab(group = 'org.apache.camel', module = 'camel-test', version = '2.3.0')
 @Grab(group = 'junit', module = 'junit', version = '4.4')
 /**
- * For use by Castle Press LLC or anyone else 
+ * For use by Castle Press LLC or anyone else
  * who gets their grubby little hands on it.
  *
  * User: steve
  * Date: Jun 8, 2010
  * Time: 2:46:18 PM
  */
-class FileCopyTest extends CamelTestSupport {
+class MulticastPipesAndFiltersTest extends CamelTestSupport {
 
   @Before
   void setup() {
@@ -43,7 +43,14 @@ class FileCopyTest extends CamelTestSupport {
     return new RouteBuilder() {
       @Override
       public void configure() throws Exception {
-        from("file:///tmp/jabber").to("file:///tmp/jibber-jabber")
+
+        def props = new Properties()
+        new File("/tmp/props.properties").withInputStream {
+          stream -> props.load(stream)
+        }
+        from("file:///tmp/jabber").multicast().pipeline().to("file:///tmp/jibber-jabber").
+                pipeline().to("xmpp://talk.google.com:5222/iamsteveholmes@gmail.com?serviceName=gmail.com&user=${props.username}&password=${props.password}")
+
       };
     }
   }

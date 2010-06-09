@@ -21,7 +21,7 @@ class SampleRoute extends GroovyRouteBuilder {
   protected void configure() {
 
     def props = new Properties()
-    new File("/tmp/jabber/props.properties").withInputStream {
+    new File("/tmp/props.properties").withInputStream {
       stream -> props.load(stream)
     }
     
